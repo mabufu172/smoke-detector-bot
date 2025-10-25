@@ -39,10 +39,11 @@ async def on_message(message):
     author = message.author
     ctx = message.content
     ch = message.channel
+    guild = message.guild
 
     def playBeep():
-        if message.guild.voice_client and beep:
-            message.guild.voice_client.play(discord.FFmpegPCMAudio("beep.wav"))
+        if guild.voice_client and beep:
+            guild.voice_client.play(discord.FFmpegPCMAudio("beep.wav"))
     
     if author == client.user:
         return
@@ -50,7 +51,7 @@ async def on_message(message):
     if ctx.startswith('$start'):
         if not beep:
             if author.voice:
-                if not message.guild.voice_client:
+                if not guild.voice_client:
                     await author.voice.channel.connect()
                 do_i_beep(True)
                 repeat(playBeep)
@@ -68,8 +69,8 @@ async def on_message(message):
             await ch.send('You\'ve told me to already.')
 
     if ctx.startswith('$leave'):
-        if message.guild.voice_client:
-            await message.guild.voice_client.disconnect()
+        if guild.voice_client:
+            await guild.voice_client.disconnect()
             do_i_beep(False)
         else: 
             await ch.send("I\'m not in a voice.")
