@@ -10,16 +10,12 @@ max_beep_delay = 60 # According to google, it beeps per 30 to 60 seconds
 beep = False
 
 def repeat(trigger):
-
     if not beep:
         return
-
     interval = randrange(min_beep_delay, max_beep_delay)
-
     def func_wrapper():
         repeat(trigger)
         trigger()
-
     t = threading.Timer(interval, func_wrapper)
     t.start()
     return t
@@ -45,7 +41,7 @@ async def on_message(message):
     ch = message.channel
 
     def playBeep():
-        if message.guild.voice_client:
+        if message.guild.voice_client and beep:
             message.guild.voice_client.play(discord.FFmpegPCMAudio("beep.wav"))
     
     if author == client.user:
@@ -67,7 +63,7 @@ async def on_message(message):
     if ctx.startswith('$stop'):
         if beep:
             do_i_beep(False)
-            await ch.send('Okay I\'m stopping. (I might have one more pending)')  
+            await ch.send('Okay I\'m stopping.')  
         else:
             await ch.send('You\'ve told me to already.')
 
